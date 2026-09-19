@@ -826,36 +826,25 @@ tbody tr:hover {
     }
 
 
-    /* LOGIN */
-
-    .container {
-        min-height: 100vh;
-    }
-
-
-    .container form {
-        padding: 25px 20px;
-    }
-
-    .checkbox-container {
+    .opcao-sozinho {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        margin-top: 10px;
         cursor: pointer;
-        margin-top: 8px;
     }
 
-    .checkbox-container input {
+    .opcao-sozinho input {
         width: 18px;
         height: 18px;
         cursor: pointer;
     }
 
-    .checkbox-container span {
-        font-size: 15px;
+    .opcao-sozinho span {
+        cursor: pointer;
     }
 
-    input:disabled {
+    #pessoas:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }

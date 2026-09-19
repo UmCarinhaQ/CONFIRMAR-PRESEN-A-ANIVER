@@ -11,7 +11,7 @@ const campoPessoas =
     document.getElementById("pessoas");
 
 
-// Quando marcar "Irei sozinho"
+// Marcar ou desmarcar "Irei sozinho"
 checkboxSozinho.addEventListener(
     "change",
     () => {
@@ -31,6 +31,7 @@ checkboxSozinho.addEventListener(
 );
 
 
+// Enviar confirmação
 formulario.addEventListener(
     "submit",
     async (event) => {
@@ -47,6 +48,7 @@ formulario.addEventListener(
             Number(campoPessoas.value);
 
 
+        // Verificar nome
         if (!nome) {
 
             mensagem.textContent =
@@ -56,6 +58,7 @@ formulario.addEventListener(
         }
 
 
+        // Verificar acompanhantes
         if (
             isNaN(pessoas) ||
             pessoas < 0 ||
@@ -112,11 +115,13 @@ formulario.addEventListener(
                 dados.mensagem;
 
 
+            // Limpar formulário
             formulario.reset();
 
             campoPessoas.disabled = false;
 
             campoPessoas.value = 0;
+
 
         } catch (erro) {
 

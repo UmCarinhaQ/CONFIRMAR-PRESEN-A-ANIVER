@@ -1,60 +1,131 @@
-<form id="formConfirmacao">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
 
-    <div class="campo">
-        <label for="nome">
-            Seu nome
-        </label>
-
-        <input
-            type="text"
-            id="nome"
-            placeholder="Digite seu nome"
-            autocomplete="name"
-            required
-        >
-    </div>
-
-    <div class="campo">
-        <label>
-            Você irá sozinho?
-        </label>
-
-        <label class="checkbox-container">
-            <input
-                type="checkbox"
-                id="sozinho"
-            >
-
-            <span>
-                Irei sozinho
-            </span>
-        </label>
-    </div>
-
-    <div class="campo">
-        <label for="pessoas">
-            Quantos acompanhantes irão com você?
-        </label>
-
-        <input
-            type="number"
-            id="pessoas"
-            min="0"
-            value="0"
-            placeholder="Ex: 2"
-            required
-        >
-
-        <small class="ajuda">
-            Não conte você mesmo.
-        </small>
-    </div>
-
-    <button
-        type="submit"
-        class="botao"
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
-        CONFIRMAR PRESENÇA
-    </button>
 
-</form>
+    <title>Confirmar presença</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <main class="convite-container">
+
+        <div class="confirmacao-card">
+
+            <span class="convite-label">
+                ANIVERSÁRIO DO WELLINGTON
+            </span>
+
+            <h1>
+                Confirme sua presença
+            </h1>
+
+            <p class="convite-texto">
+                Preencha os dados abaixo para
+                confirmar sua presença na comemoração.
+            </p>
+
+            <form id="formConfirmacao">
+
+                <!-- NOME -->
+                <div class="campo">
+
+                    <label for="nome">
+                        Seu nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        placeholder="Digite seu nome"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ACOMPANHANTES -->
+                <div class="campo">
+
+                    <label for="pessoas">
+                        Quantos acompanhantes irão com você?
+                    </label>
+
+                    <input
+                        type="number"
+                        id="pessoas"
+                        min="0"
+                        value="0"
+                        placeholder="Ex: 2"
+                        required
+                    >
+
+                    <label
+                        for="sozinho"
+                        class="opcao-sozinho"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="sozinho"
+                        >
+
+                        <span>
+                            Irei sozinho
+                        </span>
+
+                    </label>
+
+                    <small class="ajuda">
+                        Informe apenas a quantidade de acompanhantes.
+                    </small>
+
+                </div>
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    class="botao"
+                >
+                    CONFIRMAR PRESENÇA
+                </button>
+
+            </form>
+
+
+            <!-- MENSAGEM -->
+
+            <p id="mensagem"></p>
+
+
+            <!-- VOLTAR -->
+
+            <a
+                href="index.html"
+                class="voltar"
+            >
+                ← Voltar para o convite
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="js/confirmacao.js"></script>
+
+</body>
+</html>
