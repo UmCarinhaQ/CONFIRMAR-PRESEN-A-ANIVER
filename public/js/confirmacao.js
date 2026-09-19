@@ -1,17 +1,35 @@
-// ========================================
-// ELEMENTOS DA PÁGINA
-// ========================================
-
 const formulario =
     document.getElementById("formConfirmacao");
 
 const mensagem =
     document.getElementById("mensagem");
 
+const checkboxSozinho =
+    document.getElementById("sozinho");
 
-// ========================================
-// ENVIO DA CONFIRMAÇÃO
-// ========================================
+const campoPessoas =
+    document.getElementById("pessoas");
+
+
+// Quando marcar "Irei sozinho"
+checkboxSozinho.addEventListener(
+    "change",
+    () => {
+
+        if (checkboxSozinho.checked) {
+
+            campoPessoas.value = 0;
+
+            campoPessoas.disabled = true;
+
+        } else {
+
+            campoPessoas.disabled = false;
+
+        }
+    }
+);
+
 
 formulario.addEventListener(
     "submit",
@@ -19,29 +37,15 @@ formulario.addEventListener(
 
         event.preventDefault();
 
-
-        // ========================================
-        // PEGAR OS VALORES
-        // ========================================
-
         const nome =
             document
                 .getElementById("nome")
                 .value
                 .trim();
 
-
         const pessoas =
-            Number(
-                document
-                    .getElementById("pessoas")
-                    .value
-            );
+            Number(campoPessoas.value);
 
-
-        // ========================================
-        // VALIDAR NOME
-        // ========================================
 
         if (!nome) {
 
@@ -52,25 +56,18 @@ formulario.addEventListener(
         }
 
 
-        // ========================================
-        // VALIDAR QUANTIDADE
-        // ========================================
-
         if (
             isNaN(pessoas) ||
-            pessoas < 0
+            pessoas < 0 ||
+            !Number.isInteger(pessoas)
         ) {
 
             mensagem.textContent =
-                "Digite uma quantidade válida de pessoas.";
+                "Digite uma quantidade válida de acompanhantes.";
 
             return;
         }
 
-
-        // ========================================
-        // ENVIAR PARA O SERVIDOR
-        // ========================================
 
         try {
 
@@ -101,10 +98,6 @@ formulario.addEventListener(
                 await resposta.json();
 
 
-            // ========================================
-            // VERIFICAR RESPOSTA
-            // ========================================
-
             if (!resposta.ok) {
 
                 mensagem.textContent =
@@ -115,15 +108,15 @@ formulario.addEventListener(
             }
 
 
-            // ========================================
-            // SUCESSO
-            // ========================================
-
             mensagem.textContent =
                 dados.mensagem;
 
 
             formulario.reset();
+
+            campoPessoas.disabled = false;
+
+            campoPessoas.value = 0;
 
         } catch (erro) {
 
@@ -132,10 +125,8 @@ formulario.addEventListener(
                 erro
             );
 
-
             mensagem.textContent =
                 "Erro ao conectar com o servidor.";
         }
-
     }
 );
