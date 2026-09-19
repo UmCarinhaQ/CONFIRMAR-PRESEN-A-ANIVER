@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Painel Administrativo</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="admin-container">
+
+
+        <!-- ========================================
+             CABEÇALHO
+        ======================================== -->
+
+        <header class="admin-topo">
+
+            <div>
+
+                <span class="admin-label">
+                    ANIVERSÁRIO
+                </span>
+
+                <h1>
+                    Painel Administrativo
+                </h1>
+
+                <p>
+                    Gerencie as confirmações de presença.
+                </p>
+
+            </div>
+
+
+            <button
+                id="botaoSair"
+                class="botao-sair"
+            >
+                Sair
+            </button>
+
+        </header>
+
+
+        <!-- ========================================
+             RESUMO
+        ======================================== -->
+
+        <section class="resumo">
+
+
+            <div class="card-resumo">
+
+                <span>
+                    Pessoas confirmadas
+                </span>
+
+                <strong id="totalPessoas">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="card-resumo">
+
+                <span>
+                    Confirmações
+                </span>
+
+                <strong id="totalConfirmacoes">
+                    0
+                </strong>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ========================================
+             LISTA
+        ======================================== -->
+
+        <section class="lista-confirmacoes">
+
+            <div class="titulo-lista">
+
+                <div>
+
+                    <h2>
+                        Convidados
+                    </h2>
+
+                    <p>
+                        Pessoas que já confirmaram presença.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tabela-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Nome
+                            </th>
+
+                            <th>
+                                Pessoas
+                            </th>
+
+                            <th>
+                                Data
+                            </th>
+
+                            <th>
+                                Ação
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaConfirmacoes">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/admin.js"></script>
+
+</body>
+
+</html>

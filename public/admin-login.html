@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login Administrativo</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>
+            🔐 Área Administrativa
+        </h1>
+
+
+        <p>
+            Faça login para acessar
+            as confirmações.
+        </p>
+
+
+        <form id="formLogin">
+
+            <label for="usuario">
+                Usuário
+            </label>
+
+            <input
+                type="text"
+                id="usuario"
+                placeholder="Digite o usuário"
+                required
+            >
+
+
+            <label for="senha">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="senha"
+                placeholder="Digite a senha"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="botao"
+            >
+                ENTRAR
+            </button>
+
+        </form>
+
+
+        <p id="mensagem"></p>
+
+    </main>
+
+
+    <script src="js/admin-login.js"></script>
+
+</body>
+
+</html>
