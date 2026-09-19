@@ -1,15 +1,35 @@
-import Database from "better-sqlite3";
+import { createClient } from "@supabase/supabase-js";
+import "dotenv/config";
 
-const db = new Database("confirmacoes.db");
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
 
-// Cria a tabela caso ela ainda não exista
-db.exec(`
-    CREATE TABLE IF NOT EXISTS confirmacoes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        pessoas INTEGER NOT NULL,
-        criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-`);
+console.log("SUPABASE_URL:", supabaseUrl);
+console.log(
+    "SECRET KEY CONFIGURADA:",
+    !!supabaseSecretKey
+);
+console.log(
+    "PREFIXO DA CHAVE:",
+    supabaseSecretKey?.substring(0, 10)
+);
+
+if (!supabaseUrl || !supabaseSecretKey) {
+    throw new Error(
+        "As variáveis do Supabase não foram configuradas."
+    );
+}
+
+const db = createClient(
+    supabaseUrl,
+    supabaseSecretKey,
+    {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false
+        }
+    }
+);
 
 export default db;

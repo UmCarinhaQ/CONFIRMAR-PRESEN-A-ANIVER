@@ -5,30 +5,16 @@ import "dotenv/config";
 
 import db from "./database";
 
-// ========================================
-// TIPAGEM DA SESSÃO
-// ========================================
-
 type SessaoAdmin = session.Session & {
     admin?: boolean;
 };
-
-// ========================================
-// CONFIGURAÇÃO
-// ========================================
 
 const app = express();
 
 const PORT = 3000;
 
-// ========================================
-// MIDDLEWARES
-// ========================================
-
-// Permite receber JSON
 app.use(express.json());
 
-// Configuração das sessões
 app.use(
     session({
         secret:
@@ -46,246 +32,521 @@ app.use(
     })
 );
 
-// Permite acessar os arquivos da pasta public
 app.use(
     express.static(
-        path.join(__dirname, "../public")
+        path.join(
+            __dirname,
+            "../public"
+        )
     )
 );
 
-// ========================================
-// PÁGINA PRINCIPAL
-// ========================================
-
 app.get("/", (req, res) => {
+
     res.sendFile(
         path.join(
             __dirname,
             "../public/index.html"
         )
     );
+
 });
 
-// ========================================
-// LOGIN ADMIN
-// ========================================
 
-app.post("/admin/login", (req, res) => {
-    const { usuario, senha } = req.body;
+// =====================================
+// LOGIN ADMINISTRATIVO
+// =====================================
 
-    const usuarioCorreto =
-        process.env.ADMIN_USER;
+app.post(
+    "/admin/login",
+    (req, res) => {
 
-    const senhaCorreta =
-        process.env.ADMIN_PASSWORD;
+        const {
+            usuario,
+            senha
+        } = req.body;
 
-    if (
-        usuario === usuarioCorreto &&
-        senha === senhaCorreta
-    ) {
-        (req.session as SessaoAdmin).admin =
-            true;
+        const usuarioCorreto =
+            process.env.ADMIN_USER;
 
-        return res.json({
-            sucesso: true,
-            mensagem:
-                "Login realizado com sucesso!"
-        });
-    }
+        const senhaCorreta =
+            process.env.ADMIN_PASSWORD;
 
-    return res.status(401).json({
-        sucesso: false,
-        mensagem:
-            "Usuário ou senha incorretos."
-    });
-});
+        if (
+            usuario === usuarioCorreto &&
+            senha === senhaCorreta
+        ) {
 
-// ========================================
-// VERIFICAR LOGIN
-// ========================================
+            (
+                req.session as SessaoAdmin
+            ).admin = true;
 
-app.get("/admin/verificar", (req, res) => {
-    if (
-        (req.session as SessaoAdmin).admin
-    ) {
-        return res.json({
-            autenticado: true
-        });
-    }
-
-    return res.status(401).json({
-        autenticado: false
-    });
-});
-
-// ========================================
-// LOGOUT
-// ========================================
-
-app.post("/admin/logout", (req, res) => {
-    req.session.destroy((erro) => {
-        if (erro) {
-            return res.status(500).json({
-                mensagem: "Erro ao sair."
+            return res.json({
+                sucesso: true,
+                mensagem:
+                    "Login realizado com sucesso!"
             });
+
         }
 
-        res.json({
-            mensagem: "Logout realizado."
-        });
-    });
-});
+        return res
+            .status(401)
+            .json({
+                sucesso: false,
+                mensagem:
+                    "Usuário ou senha incorretos."
+            });
 
-// ========================================
-// MIDDLEWARE ADMIN
-// ========================================
+    }
+);
+
+
+// =====================================
+// VERIFICAR LOGIN
+// =====================================
+
+app.get(
+    "/admin/verificar",
+    (req, res) => {
+
+        if (
+            (req.session as SessaoAdmin)
+                .admin
+        ) {
+
+            return res.json({
+                autenticado: true
+            });
+
+        }
+
+        return res
+            .status(401)
+            .json({
+                autenticado: false
+            });
+
+    }
+);
+
+
+// =====================================
+// LOGOUT
+// =====================================
+
+app.post(
+    "/admin/logout",
+    (req, res) => {
+
+        req.session.destroy(
+            (erro) => {
+
+                if (erro) {
+
+                    return res
+                        .status(500)
+                        .json({
+                            mensagem:
+                                "Erro ao sair."
+                        });
+
+                }
+
+                return res.json({
+                    mensagem:
+                        "Logout realizado."
+                });
+
+            }
+        );
+
+    }
+);
+
+
+// =====================================
+// VERIFICAR ADMIN
+// =====================================
 
 function verificarAdmin(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
 ) {
+
     if (
-        !(req.session as SessaoAdmin).admin
+        !(req.session as SessaoAdmin)
+            .admin
     ) {
-        return res.status(401).json({
-            mensagem:
-                "Acesso não autorizado."
-        });
+
+        return res
+            .status(401)
+            .json({
+                mensagem:
+                    "Acesso não autorizado."
+            });
+
     }
 
     next();
+
 }
 
-// ========================================
-// CONFIRMAR PRESENÇA
-// ========================================
 
-app.post("/confirmacoes", (req, res) => {
-    const { nome, pessoas } = req.body;
+// =====================================
+// CRIAR CONFIRMAÇÃO
+// =====================================
 
-    // Verifica se o nome foi preenchido
-    if (
-        !nome ||
-        pessoas === undefined
-    ) {
-        return res.status(400).json({
-            mensagem:
-                "Preencha todos os campos."
-        });
+app.post(
+    "/confirmacoes",
+    async (req, res) => {
+
+        try {
+
+            const {
+                nome,
+                pessoas
+            } = req.body;
+
+            if (
+                !nome ||
+                pessoas === undefined
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        mensagem:
+                            "Preencha todos os campos."
+                    });
+
+            }
+
+            if (
+                typeof nome !== "string" ||
+                nome.trim().length === 0
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        mensagem:
+                            "Nome inválido."
+                    });
+
+            }
+
+            if (
+                typeof pessoas !== "number" ||
+                pessoas < 0 ||
+                !Number.isInteger(pessoas)
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        mensagem:
+                            "Quantidade de acompanhantes inválida."
+                    });
+
+            }
+
+            const {
+                data,
+                error
+            } = await db
+                .from("confirmacoes")
+                .insert({
+                    nome: nome.trim(),
+                    pessoas: pessoas
+                })
+                .select()
+                .single();
+
+            if (error) {
+
+                console.error(
+                    "ERRO COMPLETO DO SUPABASE:"
+                );
+
+                console.error(
+                    JSON.stringify(
+                        error,
+                        null,
+                        2
+                    )
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        mensagem:
+                            "Erro ao salvar confirmação: " +
+                            error.message
+                    });
+
+            }
+
+            console.log(
+                "Confirmação salva:",
+                data
+            );
+
+            return res.json({
+                sucesso: true,
+                mensagem:
+                    "Presença confirmada com sucesso! 🎉"
+            });
+
+        } catch (erro) {
+
+            console.error(
+                "ERRO INTERNO:",
+                erro
+            );
+
+            return res
+                .status(500)
+                .json({
+                    mensagem:
+                        "Erro interno do servidor."
+                });
+
+        }
+
     }
+);
 
-    // Verifica se a quantidade é válida
-    if (
-        typeof pessoas !== "number" ||
-        pessoas < 0
-    ) {
-        return res.status(400).json({
-            mensagem:
-                "Quantidade de pessoas inválida."
-        });
-    }
 
-    // Comando para salvar no banco
-    const comando = db.prepare(`
-        INSERT INTO confirmacoes
-        (nome, pessoas)
-        VALUES (?, ?)
-    `);
-
-    comando.run(nome, pessoas);
-
-    res.json({
-        mensagem:
-            "Presença confirmada com sucesso! 🎉"
-    });
-});
-
-// ========================================
+// =====================================
 // LISTAR CONFIRMAÇÕES
-// SOMENTE ADMIN
-// ========================================
+// =====================================
 
 app.get(
     "/confirmacoes",
     verificarAdmin,
-    (req, res) => {
-        const confirmacoes = db
-            .prepare(`
-                SELECT *
-                FROM confirmacoes
-                ORDER BY id DESC
-            `)
-            .all();
+    async (req, res) => {
 
-        res.json(confirmacoes);
+        try {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("confirmacoes")
+                .select("*")
+                .order(
+                    "id",
+                    {
+                        ascending: false
+                    }
+                );
+
+            if (error) {
+
+                console.error(
+                    "Erro ao buscar confirmações:",
+                    error
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        mensagem:
+                            "Erro ao buscar confirmações."
+                    });
+
+            }
+
+            return res.json(
+                data || []
+            );
+
+        } catch (erro) {
+
+            console.error(
+                "Erro interno:",
+                erro
+            );
+
+            return res
+                .status(500)
+                .json({
+                    mensagem:
+                        "Erro interno do servidor."
+                });
+
+        }
+
     }
 );
 
-// ========================================
+
+// =====================================
 // TOTAL DE PESSOAS
-// SOMENTE ADMIN
-// ========================================
+// =====================================
 
 app.get(
     "/confirmacoes/total",
     verificarAdmin,
-    (req, res) => {
-        const resultado = db
-            .prepare(`
-                SELECT SUM(pessoas) AS total
-                FROM confirmacoes
-            `)
-            .get() as {
-                total: number | null;
-            };
+    async (req, res) => {
 
-        res.json({
-            total: resultado.total ?? 0
-        });
+        try {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("confirmacoes")
+                .select("pessoas");
+
+            if (error) {
+
+                console.error(
+                    "Erro ao calcular total:",
+                    error
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        mensagem:
+                            "Erro ao calcular total."
+                    });
+
+            }
+
+            let total = 0;
+
+            if (data) {
+
+                data.forEach(
+                    (confirmacao) => {
+
+                        total +=
+                            1 +
+                            confirmacao.pessoas;
+
+                    }
+                );
+
+            }
+
+            return res.json({
+                total: total
+            });
+
+        } catch (erro) {
+
+            console.error(
+                "Erro interno:",
+                erro
+            );
+
+            return res
+                .status(500)
+                .json({
+                    mensagem:
+                        "Erro interno do servidor."
+                });
+
+        }
+
     }
 );
 
-// ========================================
+
+// =====================================
 // EXCLUIR CONFIRMAÇÃO
-// SOMENTE ADMIN
-// ========================================
+// =====================================
 
 app.delete(
     "/confirmacoes/:id",
     verificarAdmin,
-    (req, res) => {
-        const id = Number(
-            req.params.id
-        );
+    async (req, res) => {
 
-        // Verifica se o ID é válido
-        if (isNaN(id)) {
-            return res.status(400).json({
-                mensagem: "ID inválido."
+        try {
+
+            const id =
+                Number(
+                    req.params.id
+                );
+
+            if (
+                isNaN(id)
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        mensagem:
+                            "ID inválido."
+                    });
+
+            }
+
+            const {
+                error
+            } = await db
+                .from("confirmacoes")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                );
+
+            if (error) {
+
+                console.error(
+                    "Erro ao excluir:",
+                    error
+                );
+
+                return res
+                    .status(500)
+                    .json({
+                        mensagem:
+                            "Erro ao excluir confirmação."
+                    });
+
+            }
+
+            return res.json({
+                mensagem:
+                    "Confirmação excluída."
             });
+
+        } catch (erro) {
+
+            console.error(
+                "Erro interno:",
+                erro
+            );
+
+            return res
+                .status(500)
+                .json({
+                    mensagem:
+                        "Erro interno do servidor."
+                });
+
         }
 
-        const comando = db.prepare(`
-            DELETE FROM confirmacoes
-            WHERE id = ?
-        `);
-
-        comando.run(id);
-
-        res.json({
-            mensagem:
-                "Confirmação excluída."
-        });
     }
 );
 
-// ========================================
-// INICIAR SERVIDOR
-// ========================================
 
-app.listen(PORT, () => {
-    console.log(
-        `Servidor rodando em http://localhost:${PORT}`
-    );
-});
+// =====================================
+// INICIAR SERVIDOR
+// =====================================
+
+app.listen(
+    PORT,
+    () => {
+
+        console.log(
+            `Servidor rodando em http://localhost:${PORT}`
+        );
+
+    }
+);
